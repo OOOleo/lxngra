@@ -2,6 +2,7 @@ package com.lxn.api.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.lxn.api.service.FileService;
+import com.lxn.api.service.PythonRunService;
 import com.lxn.api.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,12 +32,22 @@ public class FileController {
     @Autowired
     FileService fileService;
 
+    @Autowired
+    PythonRunService pythonRunService;
+
     @ApiOperation("上传文件保存")
     @ResponseStatus(code = HttpStatus.OK)
     @PostMapping
     public String uploadFile(HttpServletResponse response, HttpServletRequest request) throws Exception {
+        log.info("接收到请求........");
+        String filename = request.getParameter("filename");
+        log.info("文件名："+filename);
+        String fullPath = fileAddress + filename;
+        log.info("保存路径："+fullPath);
         fileService.uploadFile(response, request);
-        sendResponse(JSONObject.toJSONString(ResultUtil.success()), response);
+        String pyResult = pythonRunService.getPyResult(fullPath);
+        log.info(pyResult);
+        sendResponse(JSONObject.toJSONString(ResultUtil.result(pyResult)), response);
         return null;
     }
 

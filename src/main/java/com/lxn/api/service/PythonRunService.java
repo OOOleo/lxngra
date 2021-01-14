@@ -6,5 +6,5 @@ public interface PythonRunService {
      * @param filepath
      * @return
      */
-    double getPyResult(String filepath);
+    String getPyResult(String filepath);
 }

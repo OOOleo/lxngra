@@ -2,7 +2,6 @@ package com.lxn.api.service.impl;
 
 import com.lxn.api.service.FileService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +22,12 @@ public class FileServiceImpl implements FileService {
     @Override
     public void uploadFile(HttpServletResponse response, HttpServletRequest request) throws IOException {
         String filename = request.getParameter("filename");
-        String path = fileAddress + "\\copy\\";
-        String fullPath = path + filename;
+        String fullPath = fileAddress + filename;
         InputStream input = null;
         FileOutputStream fos = null;
         try {
             input = request.getInputStream();
-            File file = new File(path);
+            File file = new File(fileAddress);
             if (!file.exists()) {
                 file.mkdirs();
             }
@@ -39,7 +37,7 @@ public class FileServiceImpl implements FileService {
             while ((size = input.read(buffer, 0, 1024)) != -1) {
                 fos.write(buffer, 0, size);
             }
-            log.info("文件写入成功");
+           log.info("文件写入成功");
         }catch (IOException e){
             log.error("文件写入错误|msg={}",e.getMessage());
         }finally {
