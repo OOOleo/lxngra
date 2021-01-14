@@ -1,44 +1,15 @@
-package com.lxn.api.service.impl;
+package com.kolnick.script;
 
-import com.lxn.api.service.PythonRunService;
 import com.lxn.api.util.FilePathUtil;
 import org.junit.Test;
-import org.python.core.PyFunction;
-import org.python.core.PyInteger;
-import org.python.core.PyObject;
-import org.python.util.PythonInterpreter;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
 import javax.script.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
-import java.util.Properties;
 
-@Service
-public class PythonRunServiceImpl implements PythonRunService {
-
-    @Value("${file-location}")
-    String fileAddress;
-
-    @Override
-    public double getPyResult(String filepath) {
-        Object eval = null;
-        try {
-            FileReader fr =  new FileReader(filepath);
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("jython");
-            eval = engine.eval(fr);
-            fr.close();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-        return Double.parseDouble(eval.toString());
-    }
-
+public class TestPython {
 
     private ScriptEngine engine = null;
     private Invocable invocableEngine = null;                    // 执行引擎
@@ -48,7 +19,7 @@ public class PythonRunServiceImpl implements PythonRunService {
     public static final String SCRIPT_METHOD_NAME = "main"; // 方法
     private static ScriptEngineManager manager = new ScriptEngineManager();
 
-
+    @Test
     public void test() {
         engine = manager.getEngineByName(engineName);
         if (engine instanceof Invocable) {
@@ -85,6 +56,4 @@ public class PythonRunServiceImpl implements PythonRunService {
             e.printStackTrace();
         }
     }
-
-
 }
