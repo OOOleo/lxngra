@@ -20,27 +20,26 @@ public class PythonRunServiceImpl implements PythonRunService {
     @Override
     public String getPyResult(String filepath) {
         log.info("执行python计算.....");
-        String line = null;
+        String result = null;
         try {
             String[] args = new String[]{"python", "/lxn/test.py", filepath};
 //            String[] args = new String[]{"python", "D:\\test.py", filepath};
+            log.info(args.toString());
+            log.info("python "+"/lxn/test.py "+filepath);
             Process proc = Runtime.getRuntime().exec(args);// 执行py文件
-            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             StringBuffer sb = new StringBuffer();
-            while ((line = in.readLine()) != null) {
-                sb.append(line);
+            String line;
+            while ((line = br.readLine()) != null) {
+                //执行结果加上回车
+                sb.append(line).append("\n");
             }
-            log.info(sb.toString());
-            in.close();
-            proc.waitFor();
-            FileUtil.del(filepath);
-            return sb.toString();
+            result = sb.toString();
+            log.info(result);
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
-        return null;
+        return result;
     }
 
 }

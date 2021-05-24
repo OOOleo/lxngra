@@ -1,11 +1,16 @@
 package com.lxn.api.controller;
 
+import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
+import com.lxn.api.base.Result;
 import com.lxn.api.service.FileService;
 import com.lxn.api.service.PythonRunService;
 import com.lxn.api.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 
+@Data
 @Api(tags = {"保存上传的文件"})
 @RequestMapping("/file")
 @RestController
@@ -47,17 +53,19 @@ public class FileController {
         fileService.uploadFile(response, request);
         String pyResult = pythonRunService.getPyResult(fullPath);
         log.info(pyResult);
-        sendResponse(JSONObject.toJSONString(ResultUtil.result(pyResult)), response);
+        sendResponse(pyResult, response);
         return null;
     }
 
 
     private void sendResponse(String responseString,HttpServletResponse response) throws Exception {
         response.setContentType("application/json;charset=UTF-8");
+        Result<String> result = ResultUtil.result(responseString);
+        String s = JSONUtil.toJsonStr(result);
         PrintWriter pw = null;
         try {
             pw = response.getWriter();
-            pw.write(responseString);
+            pw.write(s);
             pw.flush();
         } finally {
             IOUtils.closeQuietly(pw);
